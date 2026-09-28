@@ -1,0 +1,33 @@
+# Cloudflare Worker config.
+#
+#   npm i -g wrangler          # or: npx wrangler ...
+#   wrangler login
+#   wrangler deploy            # from this cloudflare/ directory
+#
+# After the first deploy the Worker is live at
+#   https://pethotelgo.<seu-usuario>.workers.dev
+#
+# NOTE (public/showcase repo): the values below are placeholders. The real
+# deployment's backend host and Object Storage PAR are kept out of version
+# control (see the "Deploy" section in the README).
+
+name = "pethotelgo"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+workers_dev = true
+
+[vars]
+# Backend REST API origin. Can stay http:// — the browser never sees it.
+# MUST be a hostname, not a raw IP: Cloudflare Workers reject fetch() to a
+# literal IP with "error 1003". A free wildcard-DNS service like sslip.io or
+# nip.io (http://<ip-with-dashes>.sslip.io:8080) resolves a bare IP to a
+# hostname with no DNS record to create.
+BACKEND_ORIGIN = "http://YOUR-BACKEND-HOST:8080"
+
+# Object Storage bucket (private) — read via a pre-authenticated request (PAR:
+# AnyObjectRead, no listing). Generate one and paste the full path here; never
+# commit it. Path is up to and including /o (no trailing slash — worker.js
+# adds it).
+#   oci os preauth-request create --bucket-name <bucket> \
+#     --name worker-read-YYYY --access-type AnyObjectRead --time-expires <date>
+BUCKET_BASE = "https://<namespace>.objectstorage.<region>.oci.customer-oci.com/p/<PAR_TOKEN>/n/<namespace>/b/<bucket>/o"
