@@ -1,6 +1,7 @@
-import { API_CONFIG, API_ENDPOINTS, AUTH_STORAGE_KEYS } from "./config";
+import { API_CONFIG, API_ENDPOINTS, AUTH_STORAGE_KEYS, IS_DEMO } from "./config";
 import { clearSessionAndRedirect } from "./session";
 import { ApiError, type RequestConfig } from "./types";
+import { demoRequest } from "../demo/demoRouter";
 
 // Endpoints that must never trigger a refresh-and-retry cycle: refresh
 // itself would recurse, and login/register are called while unauthenticated.
@@ -147,6 +148,12 @@ class HttpClient {
   }
 
   async request<T>(endpoint: string, options: RequestConfig = {}): Promise<T> {
+    if (IS_DEMO) {
+      const method = options.method || "GET";
+      const body =
+        typeof options.body === "string" ? JSON.parse(options.body) : undefined;
+      return demoRequest<T>(method, endpoint, body);
+    }
     return this.executeRequest<T>(endpoint, options, true);
   }
 

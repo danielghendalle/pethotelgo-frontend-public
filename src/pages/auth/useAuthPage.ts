@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useAuth } from "@/contexts/useAuthHook";
 import { useToast } from "@/hooks/use-toast";
+import { IS_DEMO } from "@/services/core";
+import { DEMO_CREDENTIALS } from "@/services/demo/demoData";
 import {
   isValidEmail,
   isValidPassword,
@@ -58,8 +60,8 @@ export function useAuthPage({ redirectTo = "/dashboard" }: UseAuthProps = {}) {
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    password: "",
+    email: IS_DEMO ? DEMO_CREDENTIALS.email : "",
+    password: IS_DEMO ? DEMO_CREDENTIALS.password : "",
     confirmPassword: "",
   });
 

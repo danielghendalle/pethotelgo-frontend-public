@@ -26,11 +26,16 @@ function spaFallback(): Plugin {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  const isGhPages = mode === "gh-pages";
+
+  return {
   // Served from the root of a domain / CDN in production, so absolute asset
-  // URLs are correct at any client-side route depth. If you instead expose
-  // the bucket under a path prefix, build with `vite build --base=/prefix/`.
-  base: "/",
+  // URLs are correct at any client-side route depth. The `gh-pages` mode
+  // (public demo) is a GitHub Pages *project* site instead, served under
+  // /<repo-name>/, so it needs a matching base; App.tsx reads the same value
+  // back via `import.meta.env.BASE_URL` for the router's `basename`.
+  base: isGhPages ? "/pethotelgo-frontend-public/" : "/",
   server: {
     host: "::",
     port: 3000,
@@ -61,7 +66,11 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    VitePWA({
+    // Skipped for the GitHub Pages demo: a service worker scoped to
+    // /pethotelgo-frontend-public/ adds install/update complexity a
+    // portfolio demo doesn't need, and the manifest below is written for a
+    // root-scoped deploy.
+    !isGhPages && VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
       // Don't run the service worker during `npm run dev`.
@@ -145,4 +154,5 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-}));
+  };
+});

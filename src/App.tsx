@@ -25,7 +25,7 @@ const App = () => (
           <HotelProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
               <Routes>
                 <Route path="/" element={<AuthPage />} />
                 <Route path="/auth" element={<AuthPage />} />

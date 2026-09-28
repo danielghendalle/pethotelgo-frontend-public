@@ -6,6 +6,11 @@ export const API_CONFIG = {
   },
 } as const;
 
+// Public showcase build (GitHub Pages): no real backend to talk to, so every
+// request is served by an in-memory fake API with seeded fictional data
+// instead of `fetch`. See src/services/demo/.
+export const IS_DEMO = import.meta.env.VITE_DEMO_MODE === "true";
+
 export const AUTH_STORAGE_KEYS = {
   USER: "petHotelUser",
   TOKEN: "petHotelToken",

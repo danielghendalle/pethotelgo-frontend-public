@@ -2,8 +2,23 @@ import {
   API_CONFIG,
   API_ENDPOINTS,
   AUTH_STORAGE_KEYS,
+  IS_DEMO,
   clearSessionAndRedirect,
 } from "../../core";
+import {
+  getVaccinationCard as demoGetCard,
+  setVaccinationCard as demoSetCard,
+  deleteVaccinationCard as demoDeleteCard,
+} from "../../demo/demoStore";
+
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Falha ao ler o arquivo"));
+    reader.readAsDataURL(file);
+  });
+}
 
 export interface VaccinationCardResponse {
   id: string;
@@ -32,6 +47,14 @@ class VaccinationCardService {
     file: File,
     onProgress?: (event: UploadProgressEvent) => void,
   ): Promise<VaccinationCardResponse> {
+    if (IS_DEMO) {
+      onProgress?.({ loaded: file.size, total: file.size, percentage: 50 });
+      const dataUrl = await readFileAsDataUrl(file);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      onProgress?.({ loaded: file.size, total: file.size, percentage: 100 });
+      return demoSetCard(petId, file, dataUrl);
+    }
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -108,6 +131,8 @@ class VaccinationCardService {
   }
 
   async get(petId: string): Promise<VaccinationCardResponse | null> {
+    if (IS_DEMO) return demoGetCard(petId);
+
     try {
       const token = await this.getAuthToken();
 
@@ -149,6 +174,8 @@ class VaccinationCardService {
   }
 
   async delete(petId: string): Promise<void> {
+    if (IS_DEMO) return demoDeleteCard(petId);
+
     try {
       const token = await this.getAuthToken();
 

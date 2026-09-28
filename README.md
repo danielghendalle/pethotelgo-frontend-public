@@ -13,6 +13,20 @@ Ships as an installable **PWA**.
 > been removed or replaced with placeholders — everything else (code,
 > config shape, build pipeline, docs) matches production.
 
+## Live demo
+
+**[danielghendalle.github.io/pethotelgo-frontend-public](https://danielghendalle.github.io/pethotelgo-frontend-public/)**
+
+Login is pre-filled — just click **Entrar**. There's no backend behind this
+build: every request is served by an in-memory fake API
+([`src/services/demo/`](src/services/demo)) seeded with fictional
+owners/pets/reservations, so the whole app — dashboard, booking calendar,
+clients, pets, vaccination cards, settings — works standalone, and nothing
+you do there touches production or persists past a page reload. Built with
+`npm run build:gh-pages` and deployed by
+[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)
+on every push to `main`.
+
 ## Stack
 
 | | |

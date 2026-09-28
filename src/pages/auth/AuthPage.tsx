@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { PawPrint, Mail, Lock, User, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { PawPrint, Mail, Lock, User, Eye, EyeOff, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { IS_DEMO } from '@/services/core';
 import { useAuthPage } from './useAuthPage';
 
 export function AuthPage() {
@@ -26,6 +27,18 @@ export function AuthPage() {
         transition={{ duration: 0.5 }}
         className="bg-card rounded-2xl shadow-xl w-full max-w-md p-8"
       >
+        {IS_DEMO && (
+          <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-foreground">
+            <div className="flex items-center gap-2 font-medium">
+              <Sparkles className="h-4 w-4 text-primary" />
+              Demonstração pública
+            </div>
+            <p className="mt-1 text-muted-foreground">
+              Dados fictícios, nada é salvo em produção. Credenciais já
+              preenchidas — é só clicar em <strong>Entrar</strong>.
+            </p>
+          </div>
+        )}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
             <PawPrint className="w-8 h-8 text-primary" />
